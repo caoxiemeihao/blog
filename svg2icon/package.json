@@ -1,0 +1,24 @@
+{
+  "name": "svg2icon",
+  "version": "1.0.0",
+  "description": "Svg to icon solution.",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "webpack --watch",
+    "build": "webpack"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.14.6",
+    "babel-loader": "^8.2.2",
+    "babel-preset-react-app": "^10.0.0",
+    "css-loader": "^5.2.6",
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^5.3.1",
+    "less": "^4.1.1",
+    "less-loader": "^10.0.0",
+    "style-loader": "^2.0.0",
+    "typescript": "^4.3.4",
+    "webpack": "^5.39.1"
+  }
+}
