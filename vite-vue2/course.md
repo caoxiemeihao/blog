@@ -3,11 +3,23 @@
 
 #### vite vs webpack
 
+---
 
-#### vite 模板与手工写法
+#### vite 模板 vs 手动创建
 
+---
 
 #### vite 插件入门
 
+- test-plugin-html
+- test-plugin-md
 
-#### 社区插件集成
+---
+
+#### vite 社区插件
+
+- vite-plugin-vue2
+- vite-plugin-html-template
+- vite-plugin-commonjs
+- vite-plugin-dynamic-import
+- vite-plugin-fast-external
