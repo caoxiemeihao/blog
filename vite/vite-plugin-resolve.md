@@ -1,6 +1,6 @@
 # Vite 官方教程插件实现与踩坑
 
-![vite-plugin-resolve.png](https://github.com/caoxiemeihao/blog/vite/vite-plugin-resolve.png?raw=true)
+![vite-plugin-resolve.png](https://github.com/caoxiemeihao/blog/blob/main/vite/vite-plugin-resolve.png?raw=true)
 
 从与 Vite 的相知，相识到在工作中使用已经一年有余；用 Anthony Fu 的话说这期间 Vite 社区爆炸式的增长，大量周边生态也在不断的增加；即这也表明 Vite 使用过程中难免会有一些社区可能还没有即时跟进的功能、插件。工作中这种情况很容易碰到，那么学会写一个自己的 Vite 插件是很有必要的！
 
