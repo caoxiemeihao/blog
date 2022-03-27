@@ -59,12 +59,12 @@ export async function resolvePlugins(
     isBuild ? metadataPlugin() : null,
     isBuild ? null : preAliasPlugin(),
     aliasPlugin({ entries: config.resolve.alias }),
-    // 🚨 重点 3 -- 记下来，一会儿要考的
+    // 🚨重点③ -- 记下来，一会儿要考的
     ...prePlugins,
     config.build.polyfillModulePreload
       ? modulePreloadPolyfillPlugin(config)
       : null,
-    // 🚨 重点 1 -- 记下来，一会儿要考的
+    // 🚨重点① -- 记下来，一会儿要考的
     resolvePlugin({
       ...config.resolve,
       root: config.root,
@@ -89,7 +89,7 @@ export async function resolvePlugins(
     webWorkerPlugin(config),
     workerImportMetaUrlPlugin(config),
     assetPlugin(config),
-    // 🚨 重点 2 -- 记下来，一会儿要考的
+    // 🚨重点② -- 记下来，一会儿要考的
     ...normalPlugins,
     definePlugin(config),
     cssPostPlugin(config),
@@ -147,13 +147,13 @@ export default {
 
 就这么 easy 的一个 external 的插件，发到 npm 上周下载量**几k**不难，面试装逼妥妥滴~ 🤩
 
-还记得上面的 **🚨 重点 1** 么，而你的插件排在 **🚨 重点 2** 的地方；也就是说试运行时候，你的插件没机会处理 vue 这裸模块，反而会被内置的 `resolvePlugin` 给传送到 `optimizer` 中给预构建掉！**这就是为啥说官方的 Demo 可能不是按照预期运行**
+还记得上面的 **🚨重点①** 么，而你的插件排在 **🚨重点②** 的地方；即实际运行时候，你的插件没机会处理 vue 这裸模块，反而会被内置的 `resolvePlugin` 给传送到 `optimizer` 中给预构建掉！而后在 Vite 运行时加载裸模块且刚好找到了 node_modules/.vite/vue.js 预构建模块就会优先命中，干脆不鸟你写的 `load` 钩子。**这就是为啥说官方的 Demo 可能不是按照预期运行**
 
 #### 实现一个按照预期运行的 Demo
 
 既然我们自己实现的，别总叫它 Demo 了，就好像喊人家张三李四似的；干脆起个名字吧 `vite-plugin-resolve` - 就是要和内置的 `resolvePlugin` 对标！
 
-我们可以将我们的插件提前到 **🚨 重点 3** 的地方来实现我们的预期行为。
+我们可以将我们的插件提前到 **🚨重点③** 的地方来实现我们的预期行为。
 
 ```js
 // vite.config.ts
@@ -161,7 +161,7 @@ export default {
   plugin: [
     {
       name: 'vue-plugin-resolve',
-      // 我要去 “🚨 重点 3” 的位置
+      // 我要去 “🚨重点③” 的位置
       enforce: 'pre',
       resolveId(id) { /* 同原来的逻辑 */ },
       load(id) { /* 同原来的逻辑 */ },
