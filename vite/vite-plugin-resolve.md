@@ -20,11 +20,11 @@ Vite 中有三个重要概念，`server`、`build`、`Pre-building` 对应着内
 
 > 部分 Vite 源码
 
-```js
+```ts
 // src/node/server/middlewares/transform.ts
 export function transformMiddleware(
   server: ViteDevServer
-): Connect.NextHandleFunction
+): Connect.NextHandleFunction { }
 
 // src/node/server/transformRequest.ts
 export function transformRequest(
@@ -40,7 +40,7 @@ export function transformRequest(
 
 > 内置插件源码
 
-```js
+```ts
 // src/node/plugins/index.ts
 
 export async function resolvePlugins(
