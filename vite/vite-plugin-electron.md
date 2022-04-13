@@ -66,7 +66,7 @@ Vite 插件实际上是一些“钩子”的集合，在构建的特定时期会
   name: 'vite-plugin-name',
   config() {},
   resolveId() {},
-  resolve() {},
+  load() {},
   transform() {},
   writeBundle() {},
   // ...other hooks
@@ -75,7 +75,7 @@ Vite 插件实际上是一些“钩子”的集合，在构建的特定时期会
 
 ## Vite 编程接口 Node.js API
 
-很多时候，我们使用 Vite 只需要一个 `vite.config.ts` + `vite cmd` 组合的形式就可以开发我们的项目了，但是 Vite 也为我们提供了全量的 Node.js API 可供我们灵活使用比如：
+很多时候，我们使用 Vite 只需要一个 `vite.config.ts` + `vite cmd` 组合的形式就可以开发我们的项目了，但同时 Vite 也为我们提供了全量的、可编程的 Node.js API 供我们灵活调度，比如：
 
 `vite serve` 对应 Vite API 中的 `createServer().listen()`
 
