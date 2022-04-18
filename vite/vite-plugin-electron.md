@@ -139,7 +139,7 @@ build({
           electron,
           // 指定 electron.exe 入口文件，等价于 npm-script 中的 `electron .`
           ['.'],
-          // 所有的控制台 log 都输出到当前进程命令行中
+          // 子进程的 console.log 都输出到当前命令行
           { stdio: 'inherit'}
         );
       },
@@ -164,7 +164,7 @@ build({
       name: 'vite-plugin-electron',
       writeBundle() {
         if (child) {
-          // 每次启动前杀死正则运行的 Electron 程序
+          // 每次启动前杀死正在运行的 Electron 程序
           child.kill();
         }
         child = proc.spawn(electron, ['.'], { stdio: 'inherit'});
