@@ -85,7 +85,7 @@ Vite 插件实际上是一些“钩子”的集合，在构建的特定时期会
 
 ## 项目工程目录结构
 
-Electron 分为主进程、渲染进程；我们项目也根据两个进程来设计 - 基于 `npm create vite vite-electron-app -- --template vue-ts` 官方的工程模板来改造
+Electron 分为主进程、渲染进程；我们项目也根据两个进程来设计 - 基于 `npm create vite electron-vite-app -- --template vue-ts` 官方的工程模板来改造
 
 ```tree
 ├── electron-main  # 新增主进程目录
@@ -139,7 +139,7 @@ build({
           electron,
           // 指定 electron.exe 入口文件，等价于 npm-script 中的 `electron .`
           ['.'],
-          // 子进程的 console.log 都输出到当前命令行
+          // 将子进程的 console.log 输出到当前命令行
           { stdio: 'inherit'}
         );
       },
@@ -188,7 +188,7 @@ import proc from 'child_process'
 export interface Configuration {
   /** 主程序相关配置 */
   main: {
-    /** build.lib.try 的一个快捷配置 */
+    /** build.lib.entry 的一个快捷配置 */
     entry: string
     /** 支持用户自定义 Vite 构建配置 */
     vite?: UserConfig
