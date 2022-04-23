@@ -1,6 +1,7 @@
 # ⚡️ 一个插件让 Vite 与 Electron 无缝结合
 
 ![vite-plugin-electron.png](https://github.com/caoxiemeihao/blog/blob/main/vite/vite-plugin-electron.png?raw=true)
+![vite-plugin-electron.png](https://github.com/caoxiemeihao/blog/blob/main/vite/vite-plugin-electron.gif?raw=true)
 
 ## 前言
 
@@ -87,13 +88,13 @@ Vite 插件实际上是一些“钩子”的集合，在构建的特定时期会
 
 Electron 分为主进程、渲染进程；我们项目也根据两个进程来设计 - 基于 `npm create vite electron-vite-app -- --template vue-ts` 官方的工程模板来改造
 
-```tree
-├── electron-main  # 新增主进程目录
-├   ├── index.ts
-├── src            # 渲染进程目录；脚手架生成的目录结构，无需任何改动
-├   ├── main.ts
-├── index.html
-├── vite.config.ts
+```diff
++ ├── electron-main # 新增主进程目录
++ |   └── index.ts
+  ├── src           # 渲染进程目录；脚手架生成的目录结构，无需任何改动
+  |   └── main.ts
+  ├── index.html
+  └── vite.config.ts
 ```
 
 ## Vite 构建 Electron 入口文件
@@ -201,7 +202,7 @@ export default function viteElectron(config: Configuration) {
     // 这里我们使用已经加载完成的 config 钩子
     // 因为这个钩子已经确定了所有必要的配置
     configResolved(viteConfig) {
-      let electronProcess: ChildProcessWithoutNullStreams | null = null
+      let child: ChildProcessWithoutNullStreams | null = null
 
       const viteElectronConfig: UserConfig = {
         build: {
@@ -215,11 +216,13 @@ export default function viteElectron(config: Configuration) {
           watch: {},
         },
         plugins: [{
-          name: 'electron-main-watcher',
+          // Electron 启动、重启逻辑
+          name: 'electron-main-starter',
           writeBundle() {
-            // Electron 启动、重启逻辑
-            electronProcess && electronProcess.kill()
-            electronProcess = spawn(electron, ['.'], { stdio: 'inherit', env })
+            if (child) {
+              child.kill();
+            }
+            child = proc.spawn(electron, ['.'], { stdio: 'inherit'});
           },
         }],
       };
