@@ -67,6 +67,9 @@ export default {
 }
 ```
 
+*渲染进程代码 main/index.ts：*  
+即 `npm create vite` 生成代码 
+
 **主进程配置 main/vite.config.ts**
 
 Vite 提供了 `build.lib` 快捷入口，使得主进程配置十分简单；其次只需要关注下 Rollup 的 external 即可
@@ -91,6 +94,29 @@ export default {
     },
   },
 }
+```
+
+*主进程代码 main/index.ts：*
+
+```ts
+import { app, BrowserWindow } from 'electron'
+
+app.whenReady().then(() => {
+  win = new BrowserWindow({
+    title: 'Main window',
+    webPreferences: {
+      preload: join(__dirname, '../preload/index.cjs'),
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
+  })
+
+  if (app.isPackaged) {
+    win.loadFile(join(__dirname, '../renderer/index.html'))
+  } else {
+    win.loadURL('http://localhost:3000')
+  }
+})
 ```
 
 ## 启动脚本分析
