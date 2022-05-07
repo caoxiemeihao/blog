@@ -197,7 +197,7 @@ function __variableDynamicImportRuntime__(path) {
 
 **④ 转换 `require` 为 `import` 语法**
 
-插件 [vite-plugin-commonjs](https://github.com/caoxiemeihao/vite-plugins/tree/main/packages/commonjs)
+插件 [vite-plugin-commonjs](https://github.com/vite-plugin/vite-plugin-commonjs)
 
 ```sh
 npm i -D vite-plugin-commonjs
@@ -218,7 +218,7 @@ npm i -D vite-plugin-commonjs
 
 如果有代码如下
 
-```ts
+```js
 const pkg = require('../package.json');
 
 const routers = [{
@@ -229,13 +229,13 @@ const routers = [{
 
 将会生成:
 
-```ts
-import pkg  from "../package.json";
-import _MODULE_default___EXPRESSION_object__ from "@/pages/foo.vue";
+```js
+import * as pkg  from "../package.json";
+import * as __CJS_import__0__ from "@/pages/foo.vue";
 
 const routers = [{
   path: '/foo',
-  component: _MODULE_default___EXPRESSION_object__;
+  component: __CJS_import__0__.default;
 }];
 ```
 
@@ -285,7 +285,7 @@ const M = windows.Vue; export default M;
 
 > 注意：下面的配置可能需要结合你项目的情况做一些调整
 
-```ts
+```js
 import path from 'path'
 import { defineConfig } from 'vite'
 // 必选 * vite 支持 vue2 官方插件
@@ -293,9 +293,9 @@ import { createVuePlugin } from 'vite-plugin-vue2'
 // 必选 * 读取 public/index.html
 import htmlTemplate from 'vite-plugin-html-template'
 // 可选 - 兼容 CommonJs 写法
-import { vitePluginCommonjs } from 'vite-plugin-commonjs'
+import commonjs from 'vite-plugin-commonjs'
 // 可选 - 兼容 import('@views/' + path)
-import { dynamicImport } from 'vite-plugin-dynamic-import'
+import dynamicImport from 'vite-plugin-dynamic-import'
 // 可选 - 兼容 Webpack 中 require.contex
 import viteRequireContext from '@originjs/vite-plugin-require-context'
 // 可选 - 支持在 <script> 中使用 jsx 语法
@@ -312,7 +312,7 @@ export default defineConfig({
     /**
      * 处理 Webpack 项目中 require 写法
      */
-    vitePluginCommonjs(),
+    commonjs(),
     /**
      * 兼容 import('@views/' + path)
      */
@@ -352,7 +352,7 @@ export default defineConfig({
 
 ## 润
 
-```hs
+```sh
 npm run vite
 ```
 
