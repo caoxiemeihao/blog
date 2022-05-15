@@ -128,7 +128,7 @@ npm i -D vite-plugin-html-template
 
 **③ 消除 `import('@/pages/' + path)` 写法在 Vite 中警告⚠️**
 
-插件 [vite-plugin-dynamic-import](https://github.com/caoxiemeihao/vite-plugins/tree/main/packages/dynamic-import)
+插件 [vite-plugin-dynamic-import](https://github.com/vite-plugin/vite-plugin-dynamic-import)
 
 ```shell
 npm i -D vite-plugin-dynamic-import
@@ -239,7 +239,7 @@ const routers = [{
 }];
 ```
 
-**⑤ 兼容 webpack 中 `require.contex` 语法**
+**⑤ 兼容 Webpack 中 `require.contex` 语法**
 
 插件 [@originjs/vite-plugin-require-context](https://github.com/originjs/vite-plugins/tree/main/packages/vite-plugin-require-context)
 
@@ -261,12 +261,12 @@ npm i -D @originjs/vite-plugin-require-context
 npm i -D vite-plugin-lang-jsx
 ```
 
-**⑦ 支持 webpack 中 `externals` 模块**
+**⑦ 支持 Webpack 中 `externals` 模块**
 
-插件 [vite-plugin-fast-external](https://github.com/caoxiemeihao/vite-plugins/tree/main/packages/fast-external)
+插件 [vite-plugin-resolve](https://github.com/vite-plugin/vite-plugin-resolve)
 
 ```sh
-npm i -D vite-plugin-fast-external
+npm i -D vite-plugin-resolve
 ```
 
 底层实现是通过 `load` 钩子拦截，返回符合 ESModule 格式代码
@@ -275,8 +275,8 @@ npm i -D vite-plugin-fast-external
 // 你的代码
 import vue from 'vue'
 
-// vite-plugin-fast-external 返回的代码 - 感兴趣的可以通过 Network 调试查看
-const M = windows.Vue; export default M;
+// vite-plugin-resolve 返回的代码 - 感兴趣的可以通过 Network 调试查看
+const M = windows.Vue; export { M as default };
 ```
 
 ## 完整配置
@@ -301,12 +301,20 @@ import viteRequireContext from '@originjs/vite-plugin-require-context'
 // 可选 - 支持在 <script> 中使用 jsx 语法
 import langJsx from 'vite-plugin-lang-jsx'
 // 可选 - 如果你有外部 lib 通过 CDN 引入
-import external from 'vite-plugin-fast-external'
-import { vue_v2 } from 'vite-plugin-fast-external/presets'
+import resolve from 'vite-plugin-resolve'
+import { vue } from 'vite-plugin-resolve/presets'
 
 export default defineConfig({
   plugins: [
+    /**
+     * 自动检测添加 lang="jsx"，需要放到 vite-plugin-vue2 前面
+     */
+    langJsx(),
+    /**
+     * Vite 官方支持 vue2 插件
+     */
     createVuePlugin({
+      // 如果你需要 jsx
       jsx: true,
     }),
     /**
@@ -326,13 +334,12 @@ export default defineConfig({
      */
     htmlTemplate(),
     /**
-     * 自动检测添加 lang="jsx"，要放到 vite-plugin-vue2 后面
+     * 同 Webpack 中 externals
      */
-    langJsx(),
-    /**
-     * 使用内置的快捷方式
-     */
-    external({ vue: vue_v2 }),
+    resolve({
+      // 使用内置的快捷方式
+      vue: vue.v2,
+    }),
   ],
   resolve: {
     alias: [
@@ -340,11 +347,11 @@ export default defineConfig({
       { find: /* ~/ *//^~(?=\/)/, replacement: path.join(__dirname, 'node_modules') },
       { find: /* ~ *//^~(?!\/)/, replacement: path.join(__dirname, 'node_modules/') },
     ],
-    // 同 webpack 中的 extensions
+    // 同 Webpack 中的 extensions
     extensions: ['.vue', '.js', '.jsx', '.ts', '.tsx', '.json'],
   },
   define: {
-    // 同 webpack.DefinePlugin
+    // 同 Webpack.DefinePlugin
     'process.env': process.env,
   }
 })
