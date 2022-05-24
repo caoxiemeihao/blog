@@ -33,10 +33,10 @@ npm i -D vite-plugin-vue2
 
 **① 将 index.html 指向 public/index.html**
 
-插件 [vite-plugin-html-template](https://github.com/IndexXuan/vite-plugin-html-template)
+插件 [vite-html](https://github.com/vite-plugin/vite-html)
 
 ```sh
-npm i -D vite-plugin-html-template
+npm i -D vite-html
 ```
 
 摘自 `Vite` [官网的一句话](https://cn.vitejs.dev/guide/#index-html-and-project-root)
@@ -46,39 +46,31 @@ npm i -D vite-plugin-html-template
 原理解析：
 
 在开发模式下 `Vite` 的所有资源都是通过 `http server` 返回给浏览前的 `index.html` 也不例外
-也就是说我们可以通过插件的 `configureServer` 拦截到 `/`、`/index.html` 请求然后读取 `public/index.html` 并返回
+也就是说我们可以通过插件的 `configureServer` 拦截到 `/`、`/index.html` 请求然后将 `req.url` 重定向到指定文件位置
 
 ```js
 {
-  name: 'vite-vue2:html',
+  name: 'vite-html',
   configureServer(server) {
     server.middlewares.use((req, res, next) => {
       // 拦截 / 或 /index.html 请求
       if (req.url === '/' || req.url === '/index.html') {
-        const html = fs.readFileSync(path.join(__dirname, 'public/index.html'), 'utf8')
-        // 返回 public/index.html
-        res.end(html)
-      } else {
-        next()
+        req.url = '/public/index.html'
       }
+      next()
     })
   },
 }
 ```
 
-构建模式下我们需要接触一个新的概念 **虚拟文件**
-
-官方 Demo 👉 [引入一个虚拟文件](https://cn.vitejs.dev/guide/api-plugin.html#importing-a-virtual-file)  
-我们利用 `load` 实现在构建模式下正确加载 `public/index.html`  
+构建模式下我们使用 `resolveId` 钩子拦截 
 
 ```js
 {
-  name: 'vite-vue2:html',
-  load(id) {
-    if (id.endsWith('index.html')) {
-      const html = fs.readFileSync(path.join(__dirname, 'public/index.html'), 'utf8')
-      // 返回 public/index.html
-      return html
+  name: 'vite-html',
+  resolveId(id) {
+    if (id. === 'index.html') {
+      return 'public/index.html'
     }
   },
 }
@@ -290,8 +282,8 @@ import path from 'path'
 import { defineConfig } from 'vite'
 // 必选 * vite 支持 vue2 官方插件
 import { createVuePlugin } from 'vite-plugin-vue2'
-// 必选 * 读取 public/index.html
-import htmlTemplate from 'vite-plugin-html-template'
+// 必选 * 加载 public/index.html
+import html from 'vite-html'
 // 可选 - 兼容 CommonJs 写法
 import commonjs from 'vite-plugin-commonjs'
 // 可选 - 兼容 import('@views/' + path)
@@ -330,9 +322,13 @@ export default defineConfig({
      */
     viteRequireContext(),
     /**
-     * 默认使用 public/index.html 模板
+     * 将 index.html 重定向到 public/index.html
      */
-    htmlTemplate(),
+    html({
+      template: 'public/index.html',
+      // 注入 entry js
+      inject: '/src/main.js',
+    }),
     /**
      * 同 Webpack 中 externals
      */
