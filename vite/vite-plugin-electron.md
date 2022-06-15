@@ -45,7 +45,7 @@ const proc = require('child_process');
 // 通过 Node.js 提供的 `spawn` 拉起 Electron App 进程
 const child = proc.spawn(electron, process.argv.slice(2), { stdio: 'inherit', windowsHide: false });
 // 这等价于我们用鼠标双击了 Electron App 的图标启动了它
-// 所以说这一点都不神奇，我们也可以复刻同样的操作 ---- 在我们的插件中也是这个实现方式
+// 所以说这一点都不神奇，我们也可以复刻同样的操作 -- 在我们的插件中也是这个实现方式
 ```
 
 2. `.` 即代表当前目录，`electron` 会读取当前目录的 package.json 文件并找到 main 字段对应的 js 文件加载它
@@ -89,8 +89,8 @@ Vite 插件实际上是一些“钩子”的集合，在构建的特定时期会
 Electron 分为主进程、渲染进程；我们项目也根据两个进程来设计 - 基于 `npm create vite electron-vite-app -- --template vue-ts` 官方的工程模板来改造
 
 ```diff
-+ ├── electron-main # 新增主进程目录
-+ |   └── index.ts
++ ├── electron      # 新增 electron 相关目录
++ |   └── main.ts   # 新增主进程入口文件
   ├── src           # 渲染进程目录；脚手架生成的目录结构，无需任何改动
   |   └── main.ts
   ├── index.html
@@ -106,12 +106,12 @@ import { build } from 'vite'
 
 build({
   build: {
-    outDir: 'dist/electron-main',
+    outDir: 'dist/electron',
     lib: {
-      entry: 'electron-main/index.ts',
+      entry: 'electron/main.ts',
       // 目前 Electron 只能使用 commonjs
       formats: ['cjs'],
-      // 将会输出 `dist/electron-main/index.js`
+      // 将会输出 `dist/electron/main.js`
       fileName: () => '[name].js',
     },
   },
@@ -206,8 +206,8 @@ export default function viteElectron(config: Configuration) {
 
       const viteElectronConfig: UserConfig = {
         build: {
-          // 将 Electron 入口文件构建到用户配置的输出目录的 electron-main 下面
-          outDir: `${viteConfig.build.outDir}/electron-main`,
+          // 将 Electron 入口文件构建到用户配置的输出目录的 electron 下面
+          outDir: `${viteConfig.build.outDir}/electron`,
           lib: {
             entry: config.main.entry,
             formats: ['cjs'],
@@ -249,7 +249,7 @@ export default defineConfig({
   plugins: [
     electron({
       main: {
-        entry: 'electron-main/index.ts',
+        entry: 'electron/main.ts',
       },
     }),
   ],
