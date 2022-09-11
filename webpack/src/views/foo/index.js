@@ -1,0 +1,1 @@
+export const message = 'views/foo/index.js'
